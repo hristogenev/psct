@@ -1,12 +1,13 @@
-
 #!/bin/bash
 
 set -euo pipefail
 
 # Config
-FILEZILLA_APP_NAME="FileZilla.app"   # Change if the extracted .app has a different name
+FILEZILLA_APP_NAME="FileZilla.app"
 DOWNLOAD_URL="https://github.com/hristogenev/psct/raw/refs/heads/main/flzl/flzl.app.tar.bz2"
 TARGET_APP="/Applications/${FILEZILLA_APP_NAME}"
+
+echo "This installation will run only if ${FILEZILLA_APP_NAME} is not already installed."
 
 # Ensure we can write to /Applications
 if [ ! -w "/Applications" ]; then
@@ -28,40 +29,19 @@ ARCHIVE_PATH="${TMP_DIR}/flzl.app.tar.bz2"
 trap 'rm -rf "$TMP_DIR"' EXIT
 
 echo "Downloading archive from: ${DOWNLOAD_URL}"
-if ! curl -fL -o "$ARCHIVE_PATH" "$DOWNLOAD_URL"; then
-    echo "Download failed. Please check the URL or your network connection."
-    exit 1
-fi
+curl -fL -o "$ARCHIVE_PATH" "$DOWNLOAD_URL"
 
-if [ ! -s "$ARCHIVE_PATH" ]; then
-    echo "Downloaded file is empty. Aborting."
-    exit 1
-fi
+echo "Extracting archive..."
+tar -xjf "$ARCHIVE_PATH" -C "$TMP_DIR"
 
-echo "Extracting tar.bz2..."
-if ! tar -xjf "$ARCHIVE_PATH" -C "$TMP_DIR"; then
-    echo "Extraction failed. The archive might be corrupted or not a tar.bz2."
-    exit 1
-fi
-
-echo "Locating .app bundle..."
-EXTRACTED_APP_PATH="$(find "$TMP_DIR" -maxdepth 3 -type d -name "*.app" | head -n 1 || true)"
-if [ -z "$EXTRACTED_APP_PATH" ]; then
-    echo "No .app bundle found in the archive. Please ensure the archive contains a .app directory."
-    exit 1
-fi
-
-ACTUAL_APP_NAME="$(basename "$EXTRACTED_APP_PATH")"
-if [ "$ACTUAL_APP_NAME" != "$FILEZILLA_APP_NAME" ]; then
-    TARGET_APP="/Applications/${ACTUAL_APP_NAME}"
-fi
-
-echo "Installing ${ACTUAL_APP_NAME} to /Applications..."
+# Install FileZilla.app to /Applications
+echo "Installing ${FILEZILLA_APP_NAME} to /Applications..."
 if command -v ditto >/dev/null 2>&1; then
-    ditto "$EXTRACTED_APP_PATH" "$TARGET_APP"
+    ditto "${TMP_DIR}/${FILEZILLA_APP_NAME}" "$TARGET_APP"
 else
-    cp -R "$EXTRACTED_APP_PATH" "/Applications/"
+    cp -R "${TMP_DIR}/${FILEZILLA_APP_NAME}" "/Applications/"
 fi
 
-echo "${ACTUAL_APP_NAME} has been installed successfully at: ${TARGET_APP}"
+echo "${FILEZILLA_APP_NAME} has been installed successfully at: ${TARGET_APP}"
 echo "You can open it from Launchpad or Applications."
+``
