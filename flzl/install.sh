@@ -7,8 +7,6 @@ FILEZILLA_APP_NAME="FileZilla.app"
 DOWNLOAD_URL="https://github.com/hristogenev/psct/raw/refs/heads/main/flzl/flzl.app.tar.bz2"
 TARGET_APP="/Applications/${FILEZILLA_APP_NAME}"
 
-echo "This installation will run only if ${FILEZILLA_APP_NAME} is not already installed."
-
 # Ensure we can write to /Applications
 if [ ! -w "/Applications" ]; then
     echo "You don't have permission to write to /Applications."
@@ -43,5 +41,3 @@ else
 fi
 
 echo "${FILEZILLA_APP_NAME} has been installed successfully at: ${TARGET_APP}"
-echo "You can open it from Launchpad or Applications."
-``
