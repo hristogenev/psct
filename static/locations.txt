@@ -1,1 +1,1 @@
-(bos NA-US-BOS phx NA-US-PHX yyz NA-CA-YYZ lon EU-UK-LON fra EU-DE-FRA syd APAC-AUS-SYD)
+bos NA-US-BOS phx NA-US-PHX yyz NA-CA-YYZ lon EU-UK-LON fra EU-DE-FRA syd APAC-AUS-SYD
